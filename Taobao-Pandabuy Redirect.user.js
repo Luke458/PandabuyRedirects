@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Taobao-Pandabuy Redirect
 // @namespace   global
-// @description replace peace of string
+// @description replace piece of string
 // @match     http*://*.taobao.com/*
 // @version     1
 // @grant       none
