@@ -1,22 +1,14 @@
 // ==UserScript==
-// @name         Weidian to Pandabuy Redirect
+// @name         Weidian to Pandabuy
 // @namespace    global
 // @description  Automatically convert Weidian store and item links to Pandabuy store and item links.
 // @match        *://weidian.com/*
 // @match        *://*.weidian.com/*
-// @version      17
+// @version      18
 // @grant        none
 // ==/UserScript==
 
 var WeidianToPandabuyRedirect = {};
-
-WeidianToPandabuyRedirect.extractShopId = function(url) {
-    var userId = WeidianToPandabuyRedirect.getParameterByName("userid", url);
-    if (userId) return userId;
-
-    var matchSubdomain = url.match(/shop(\d+)\.v\.weidian\.com/);
-    return matchSubdomain ? matchSubdomain[1] : null;
-};
 
 WeidianToPandabuyRedirect.getParameterByName = function(name, url) {
     name = name.replace(/[\[\]]/g, "\\$&");
@@ -29,17 +21,24 @@ WeidianToPandabuyRedirect.getParameterByName = function(name, url) {
 
 WeidianToPandabuyRedirect.performRedirection = function() {
     var url = location.href;
-    var shopId = WeidianToPandabuyRedirect.extractShopId(url);
 
-    if (url.includes("item.html") && shopId) {
+    if (url.includes("item.html")) {
+        // Handle item links
         var itemId = WeidianToPandabuyRedirect.getParameterByName("itemID", url);
         if (itemId) {
-            var pandabuyItemUrl = `https://www.pandabuy.com/product?ra=500&url=${encodeURIComponent(url)}&utm_source=url&utm_medium=pdb&utm_campaign=normal`;
+            var pandabuyItemUrl = `https://www.pandabuy.com/product?ra=982&url=${encodeURIComponent(url)}&spider_token=adc1`;
             window.location.replace(pandabuyItemUrl);
         }
-    } else if (shopId) {
-        var pandabuyStoreUrl = `https://www.pandabuy.com/shopdetail?ra=806&t=wd&id=${shopId}`;
-        window.location.replace(pandabuyStoreUrl);
+    } else {
+        // Extract shopId from the subdomain
+        var matchSubdomain = url.match(/shop(\d+)\.v\.weidian\.com/);
+        var shopId = matchSubdomain ? matchSubdomain[1] : null;
+
+        if (shopId) {
+            // Handle store links
+            var pandabuyStoreUrl = `https://www.pandabuy.com/shopdetail?ra=806&t=wd&id=${shopId}`;
+            window.location.replace(pandabuyStoreUrl);
+        }
     }
 };
 
