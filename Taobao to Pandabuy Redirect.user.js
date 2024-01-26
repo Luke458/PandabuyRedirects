@@ -1,12 +1,13 @@
 // ==UserScript==
-// @name        Taobao to Pandabuy Redirect
+// @name        Taobao-Pandabuy Redirect
 // @namespace   global
 // @description Automatically redirect Taobao and Tmall pages to Pandabuy.
 // @match       http*://*.taobao.com/*
 // @match       http*://*.tmall.com/*
 // @match       http*://*.tmall.hk/*
 // @match       http*://*.tmall.tw/*
-// @version     16
+// @match       http*://*.1688.com/*
+// @version     19
 // @grant       none
 // ==/UserScript==
 
@@ -38,11 +39,17 @@ TaobaoPandabuyRedirect.performRedirection = function() {
             if (desktopUrl) window.location.replace(decodeURIComponent(desktopUrl));
         }
 
-        // Item link redirection to Pandabuy
-        if (url.includes("item.taobao.com/") || url.includes("detail.tmall.com/item.htm") || url.includes("detail.1688.com/offer/") || url.includes("m.intl.taobao.com/detail/detail.html")) {
+        // Item link redirection to Pandabuy for Taobao, Tmall, and 1688
+        if (url.includes("item.taobao.com/") || url.includes("detail.tmall.com/item.htm") || url.includes("m.intl.taobao.com/detail/detail.html") || url.includes("detail.1688.com/offer/")) {
             var itemId = TaobaoPandabuyRedirect.getParameterByName("id", url);
+            // Special handling for 1688 links where the item ID is part of the URL path
+            if (!itemId && url.includes("detail.1688.com/offer/")) {
+                var pathMatches = url.match(/offer\/(\d+)\.html/);
+                itemId = pathMatches ? pathMatches[1] : null;
+            }
+
             if (itemId) {
-                var pandabuyUrl = 'https://www.pandabuy.com/product?url=' + encodeURIComponent(url) + '&utm_source=url&utm_medium=pdb&utm_campaign=normal';
+                var pandabuyUrl = `https://www.pandabuy.com/product?ra=982&url=${encodeURIComponent(url)}`;
                 window.location.replace(pandabuyUrl);
             }
         }
@@ -71,8 +78,8 @@ TaobaoPandabuyRedirect.getStoreType = function(url) {
 
 // Random delay function
 TaobaoPandabuyRedirect.randomDelayRedirect = function() {
-    var minDelay = 500; // Minimum delay in milliseconds (1 second)
-    var maxDelay = 1000; // Maximum delay in milliseconds (5 seconds)
+    var minDelay = 1000; // Minimum delay in milliseconds (1 second)
+    var maxDelay = 2000; // Maximum delay in milliseconds (5 seconds)
     var randomDelay = Math.floor(Math.random() * (maxDelay - minDelay + 1) + minDelay);
     setTimeout(TaobaoPandabuyRedirect.performRedirection, randomDelay);
 };
