@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         Weidian to Pandabuy
+// @name         Weidian to Pandabuy Redirect
 // @namespace    global
 // @description  Automatically convert Weidian store and item links to Pandabuy store and item links.
 // @match        *://weidian.com/*
