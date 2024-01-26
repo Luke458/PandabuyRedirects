@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name        Taobao-Pandabuy Redirect
+// @name        Taobao to Pandabuy Redirect
 // @namespace   global
 // @description Automatically redirect Taobao and Tmall pages to Pandabuy.
 // @match       http*://*.taobao.com/*
